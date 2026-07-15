@@ -25,6 +25,10 @@ on:
       rust:
         type: boolean
         default: false
+      pip:
+        type: string
+        default: ""
+        description: extra pip packages to install (e.g. runtime/test deps not in pyproject)
 jobs:
   gates:
     runs-on: ${{ inputs.runner }}
@@ -38,7 +42,7 @@ jobs:
         with:
           python-version: "3.13"
       - if: ${{ inputs.python }}
-        run: pip install pytest ruff mypy && (pip install -e . || true)
+        run: pip install pytest ruff mypy ${{ inputs.pip }} && (pip install -e . || true)
       - if: ${{ inputs.node }}
         uses: actions/setup-node@v4
         with:
