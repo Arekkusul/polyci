@@ -1,5 +1,7 @@
 # polyci
 
+[![CI](https://github.com/Arekkusul/polyci/actions/workflows/ci.yml/badge.svg)](https://github.com/Arekkusul/polyci/actions/workflows/ci.yml)
+
 **One CI gate for every stack.** A single, zero-dependency Go binary that detects a project's
 language(s) and runs the right checks — `fmt → lint → typecheck → build → test` — the same way
 locally and in CI. Instead of hand-writing a bespoke `ci.yml` per repo, point polyci at any repo
