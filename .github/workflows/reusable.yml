@@ -1,0 +1,51 @@
+# Reusable CI workflow: one gate for every repo. Call it from a repo's own workflow:
+#
+#   name: CI
+#   on: [push, pull_request]
+#   jobs:
+#     ci:
+#       uses: Arekkusul/polyci/.github/workflows/reusable.yml@main
+#       with:
+#         python: true      # set the toolchains your repo needs
+#
+# polyci then detects the stack and runs fmt/lint/typecheck/build/test itself.
+name: polyci
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+      python:
+        type: boolean
+        default: false
+      node:
+        type: boolean
+        default: false
+      rust:
+        type: boolean
+        default: false
+jobs:
+  gates:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+      - if: ${{ inputs.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - if: ${{ inputs.python }}
+        run: pip install pytest ruff mypy && (pip install -e . || true)
+      - if: ${{ inputs.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - if: ${{ inputs.rust }}
+        run: rustup component add clippy rustfmt
+      - name: install polyci
+        run: go install github.com/Arekkusul/polyci@latest
+      - name: run gates
+        run: polyci run
