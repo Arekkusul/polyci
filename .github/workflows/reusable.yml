@@ -29,11 +29,17 @@ on:
         type: string
         default: ""
         description: extra pip packages to install (e.g. runtime/test deps not in pyproject)
+      apt:
+        type: string
+        default: ""
+        description: system packages to apt-get install on Linux (e.g. libasound2-dev for audio)
 jobs:
   gates:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
+      - if: ${{ inputs.apt != '' && runner.os == 'Linux' }}
+        run: sudo apt-get update && sudo apt-get install -y ${{ inputs.apt }}
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
