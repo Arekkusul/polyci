@@ -46,6 +46,8 @@ jobs:
       - if: ${{ inputs.rust }}
         run: rustup component add clippy rustfmt
       - name: install polyci
-        run: go install github.com/Arekkusul/polyci@latest
+        run: |
+          go install github.com/Arekkusul/polyci@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
       - name: run gates
         run: polyci run

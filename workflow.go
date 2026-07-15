@@ -51,7 +51,9 @@ func workflowYAML(stacks []detect.Stack) string {
 	}
 
 	b.WriteString("      - name: install polyci\n")
-	b.WriteString("        run: go install github.com/Arekkusul/polyci@latest\n")
+	b.WriteString("        run: |\n")
+	b.WriteString("          go install github.com/Arekkusul/polyci@latest\n")
+	b.WriteString("          echo \"$(go env GOPATH)/bin\" >> \"$GITHUB_PATH\"\n")
 	b.WriteString("      - name: run gates\n")
 	b.WriteString("        run: polyci run\n")
 	return b.String()
