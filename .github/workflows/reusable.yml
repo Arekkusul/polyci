@@ -33,6 +33,10 @@ on:
         type: string
         default: ""
         description: system packages to apt-get install on Linux (e.g. libasound2-dev for audio)
+      dir:
+        type: string
+        default: "."
+        description: subdirectory to run the gates in (for monorepos where the project isn't at the root)
 jobs:
   gates:
     runs-on: ${{ inputs.runner }}
@@ -48,7 +52,7 @@ jobs:
         with:
           python-version: "3.13"
       - if: ${{ inputs.python }}
-        run: pip install pytest ruff mypy ${{ inputs.pip }} && (pip install -e . || true)
+        run: pip install pytest ruff mypy ${{ inputs.pip }} && (pip install -e "${{ inputs.dir }}" || true)
       - if: ${{ inputs.node }}
         uses: actions/setup-node@v4
         with:
@@ -60,4 +64,4 @@ jobs:
           go install github.com/Arekkusul/polyci@latest
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
       - name: run gates
-        run: polyci run
+        run: polyci run --dir "${{ inputs.dir }}"
