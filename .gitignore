@@ -1,0 +1,4 @@
+/polyci
+*.test
+*.out
+coverage.txt
